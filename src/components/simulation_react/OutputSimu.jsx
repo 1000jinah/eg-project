@@ -158,8 +158,61 @@ const PolynomialRootFinder = () => {
   });
 
   useEffect(() => {
+    const highestPositiveBalance = Math.max(
+      ...balance.filter((value) => value > 0)
+    );
     setChartOptions((prevOptions) => ({
       ...prevOptions,
+      chart: {
+        margin: [120, 30, 60, 70],
+      },
+      subtitle: {
+        text: "Investment Value",
+        fontSize: 18,
+        align: "left", // Center align the subtitle
+        verticalAlign: "top", // Place the subtitle at the top
+        y: 30, // Adjust vertical position if needed
+        x:20,
+        style: {
+          fontSize: 16, // 변경된 부분
+          fontWeight: "700", // 변경된 부분
+          color: "#666",
+        },
+      },
+      title: {
+        text: `$ ${highestPositiveBalance}`,
+        align: "left", // Center align the title
+        verticalAlign: "top", // Place the title at the bottom
+        y: 75, // Adjust vertical position if needed
+        x:20,
+        style: {
+          fontSize: 28, // 변경된 부분
+          fontWeight: "normal", // 변경된 부분
+          color: "#666",
+        },
+      },
+      xAxis: {
+        labels: {
+          enabled: true, // Hide the category labels on the x-axis
+          style: {
+            color: "#b3b3b3",
+          },
+        },
+
+        crosshair: true,
+      },
+      yAxis: {
+        labels: {
+          formatter: function () {
+            return Highcharts.numberFormat(this.value, 0, "", ",");
+          },
+          style: {
+            color: "#b3b3b3",
+          },
+        },
+        title: false,
+        crosshair: true,
+      },
       legend: {
         layout: "horizontal",
         align: "right",
@@ -182,24 +235,23 @@ const PolynomialRootFinder = () => {
       },
       series: [
         {
-          type: "areaspline",
-          color: "#6ab9fd",
-          lineColor: "#6ab9fd",
+          type: "area",
+          color: "#ffcebf",
+          lineColor: "#ffcebf",
           fillColor: "transparent",
-
-          name: "Balance_Low",
-          data: balanceLow,
+          name: "Balance_High",
+          data: balanceHigh,
           marker: {
             enabled: false,
             radius: 4,
             lineWidth: 0.3,
             lineColor: "transparent",
-            fillColor: "#6ab9fd",
+            fillColor: "#ffcebf",
             symbol: "circle",
           },
         },
         {
-          type: "areaspline",
+          type: "area",
           color: "#ff754b",
           lineColor: "#ff754b",
           fillColor: "transparent",
@@ -216,18 +268,19 @@ const PolynomialRootFinder = () => {
           },
         },
         {
-          type: "areaspline",
-          color: "#ffcebf",
-          lineColor: "#ffcebf",
+          type: "area",
+          color: "#6ab9fd",
+          lineColor: "#6ab9fd",
           fillColor: "transparent",
-          name: "Balance_High",
-          data: balanceHigh,
+
+          name: "Balance_Low",
+          data: balanceLow,
           marker: {
             enabled: false,
             radius: 4,
             lineWidth: 0.3,
             lineColor: "transparent",
-            fillColor: "#ffcebf",
+            fillColor: "#6ab9fd",
             symbol: "circle",
           },
         },
@@ -272,7 +325,7 @@ const PolynomialRootFinder = () => {
   return (
     <Box sx={{ m: 5 }}>
       <Typography
-        sx={{ color: "#211d1d", fontSize: "1.6rem", fontWeight: "bold", mb: 5 }}
+        sx={{ color: "#666", fontSize: "1.6rem", fontWeight: "bold", mb: 5 }}
       >
         About You
       </Typography>
@@ -285,17 +338,17 @@ const PolynomialRootFinder = () => {
             >
               <Typography
                 sx={{
-                  color: "#211d1d",
-                  fontSize: "1.2rem",
+                  color: "#666",
+                  fontSize: "0.94rem",
                   fontWeight: "bold",
                 }}
               >
-                Investment Period
+                Investment Period ($)
               </Typography>
               <Typography
                 sx={{
-                  color: "#211d1d",
-                  fontSize: "1.2rem",
+                  color: "#666",
+                  fontSize: "0.94rem",
                   fontWeight: "bold",
                 }}
               >
@@ -303,7 +356,7 @@ const PolynomialRootFinder = () => {
               </Typography>
             </Box>
             <Slider
-              sx={{ color: "#211d1d" }}
+              sx={{ color: "#666" }}
               value={investmentPeriod}
               onChange={(event, value) =>
                 handleSliderChange(event, value, "investmentPeriod")
@@ -319,17 +372,17 @@ const PolynomialRootFinder = () => {
             >
               <Typography
                 sx={{
-                  color: "#211d1d",
-                  fontSize: "1.2rem",
+                  color: "#666",
+                  fontSize: "0.94rem",
                   fontWeight: "bold",
                 }}
               >
-                Monthly Investment
+                Monthly Investment ($)
               </Typography>
               <Typography
                 sx={{
-                  color: "#211d1d",
-                  fontSize: "1.2rem",
+                  color: "#666",
+                  fontSize: "0.94rem",
                   fontWeight: "bold",
                 }}
               >
@@ -337,7 +390,7 @@ const PolynomialRootFinder = () => {
               </Typography>
             </Box>
             <Slider
-              sx={{ color: "#211d1d" }}
+              sx={{ color: "#666" }}
               value={monthlyInvestment}
               onChange={(event, value) =>
                 handleSliderChange(event, value, "monthlyInvestment")
@@ -353,17 +406,17 @@ const PolynomialRootFinder = () => {
             >
               <Typography
                 sx={{
-                  color: "#211d1d",
-                  fontSize: "1.2rem",
+                  color: "#666",
+                  fontSize: "0.94rem",
                   fontWeight: "bold",
                 }}
               >
-                Initial Investment
+                Initial Investment ($)
               </Typography>
               <Typography
                 sx={{
-                  color: "#211d1d",
-                  fontSize: "1.2rem",
+                  color: "#666",
+                  fontSize: "0.94rem",
                   fontWeight: "bold",
                 }}
               >
@@ -371,7 +424,7 @@ const PolynomialRootFinder = () => {
               </Typography>
             </Box>
             <Slider
-              sx={{ color: "#211d1d" }}
+              sx={{ color: "#666" }}
               value={initialInvestment}
               onChange={(event, value) =>
                 handleSliderChange(event, value, "initialInvestment")
@@ -380,24 +433,24 @@ const PolynomialRootFinder = () => {
               max={500}
             />
           </Box>
-          {/* Out Value ($) */}
+          {/* Out Allowance ($) */}
           <Box sx={{ backgroundColor: "#eee", p: 3, mb: 3 }}>
             <Box
               sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}
             >
               <Typography
                 sx={{
-                  color: "#211d1d",
-                  fontSize: "1.2rem",
+                  color: "#666",
+                  fontSize: "0.94rem",
                   fontWeight: "bold",
                 }}
               >
-                Out Value
+                Out Allowance ($)
               </Typography>
               <Typography
                 sx={{
-                  color: "#211d1d",
-                  fontSize: "1.2rem",
+                  color: "#666",
+                  fontSize: "0.94rem",
                   fontWeight: "bold",
                 }}
               >
@@ -405,7 +458,7 @@ const PolynomialRootFinder = () => {
               </Typography>
             </Box>
             <Slider
-              sx={{ color: "#211d1d" }}
+              sx={{ color: "#666" }}
               value={outvalue}
               onChange={(event, value) =>
                 handleSliderChange(event, value, "outvalue")
@@ -415,32 +468,32 @@ const PolynomialRootFinder = () => {
             />
           </Box>
 
-          {/* Out Value Time ($) */}
+          {/* Out Allowance Period  (month) */}
           <Box sx={{ backgroundColor: "#eee", p: 3, mb: 3 }}>
             <Box
               sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}
             >
               <Typography
                 sx={{
-                  color: "#211d1d",
-                  fontSize: "1.2rem",
+                  color: "#666",
+                  fontSize: "0.94rem",
                   fontWeight: "bold",
                 }}
               >
-                Out Value Time
+                Out Allowance Period (month)
               </Typography>
               <Typography
                 sx={{
-                  color: "#211d1d",
-                  fontSize: "1.2rem",
+                  color: "#666",
+                  fontSize: "0.94rem",
                   fontWeight: "bold",
                 }}
               >
-                {outvaluetime}
+                {outvaluetime} month
               </Typography>
             </Box>
             <Slider
-              sx={{ color: "#211d1d" }}
+              sx={{ color: "#666" }}
               value={outvaluetime}
               onChange={(event, value) =>
                 handleSliderChange(event, value, "outvaluetime")
@@ -454,8 +507,8 @@ const PolynomialRootFinder = () => {
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <Typography
                 sx={{
-                  color: "#211d1d",
-                  fontSize: "1.2rem",
+                  color: "#666",
+                  fontSize: "0.94rem",
                   fontWeight: "bold",
                 }}
               >
@@ -463,8 +516,8 @@ const PolynomialRootFinder = () => {
               </Typography>
               <Typography
                 sx={{
-                  color: "#211d1d",
-                  fontSize: "1.2rem",
+                  color: "#666",
+                  fontSize: "0.94rem",
                   fontWeight: "bold",
                 }}
               >
@@ -491,13 +544,45 @@ const PolynomialRootFinder = () => {
               <HighchartsReact highcharts={Highcharts} options={chartOptions} />
             </div>
           )}
+          {calculatedValue === null && (
+            <div style={{ marginBottom: 20 }}>
+              {/* <div>
+                        <p>Calculated Value: {calculatedValue}</p>
+                        <p>Balance:</p>
+                        <ul>
+                          {balance.map((value, index) => (
+                            <li key={index}>{value}</li>
+                          ))}
+                        </ul>
+                      </div> */}
+              <div
+                style={{
+                  backgroundColor: "#eee",
+                  width: "100%",
+                  height: 400,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  fontSize: "1.2rem",
+                  fontWeight: "bold",
+                }}
+              >
+                Slider 값 설정 후, 'Calculate' 버튼을 클릭해주세요.
+              </div>
+            </div>
+          )}
           <Button
             sx={{
               minWidth: 300,
+              p: 1.35,
+              fontSize: 18,
               textAlign: "center",
-              backgroundColor: "#211d1d",
+              backgroundColor: "#666",
               color: "#fff",
               textTransform: "capitalize",
+              ":hover": {
+                backgroundColor: "#211d1d",
+              },
             }}
             onClick={handleFindRoots}
           >
