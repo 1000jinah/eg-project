@@ -10,13 +10,14 @@ const PolynomialRootFinder = () => {
   const [initialInvestment, setInitialInvestment] = useState(100);
   const [monthlyInvestment, setMonthlyInvestment] = useState(10);
   const [investmentPeriod, setInvestmentPeriod] = useState(2);
-  const [outvalue, setOutValue] = useState(2000); // Default outvalue
-  const [outvaluetime, setOutValueTime] = useState(1); // Default outvaluetime
+  const [outvalue, setOutValue] = useState(2000);
+  const [outvaluetime, setOutValueTime] = useState(1);
   const [roots, setRoots] = useState([]);
   const [calculatedValue, setCalculatedValue] = useState(null);
   const [balance, setBalance] = useState([]);
   const [balanceLow, setBalanceLow] = useState([]);
   const [balanceHigh, setBalanceHigh] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const findRoots = (coefficients) => {
     const tolerance = 1e-10;
@@ -55,6 +56,8 @@ const PolynomialRootFinder = () => {
   };
 
   const handleFindRoots = () => {
+    setLoading(true);
+
     const monthlyInvestmentPeriod = investmentPeriod * 12;
 
     const coefficients = [];
@@ -81,7 +84,7 @@ const PolynomialRootFinder = () => {
       const sigma = calculatedValue * sharpe_ratio;
       const balanceArray = [...coefficients];
       const balanceLowArray = [...coefficients];
-      const balanceHightArray = [...coefficients];
+      const balanceHighArray = [...coefficients];
 
       for (let i = 1; i <= monthlyInvestmentPeriod + outvaluetime; i++) {
         balanceArray[i] =
@@ -89,20 +92,22 @@ const PolynomialRootFinder = () => {
         balanceLowArray[i] =
           balanceLowArray[i - 1] * (1.0 + calculatedValue - z * sigma) +
           balanceLowArray[i];
-        balanceHightArray[i] =
-          balanceHightArray[i - 1] * (1.0 + calculatedValue + z * sigma) +
-          balanceHightArray[i];
+        balanceHighArray[i] =
+          balanceHighArray[i - 1] * (1.0 + calculatedValue + z * sigma) +
+          balanceHighArray[i];
       }
+      //   await new Promise((resolve) => setTimeout(resolve, 1000));
 
       setBalance(balanceArray);
       setBalanceLow(balanceLowArray);
-      setBalanceHigh(balanceHightArray);
+      setBalanceHigh(balanceHighArray);
     } else {
       setCalculatedValue(null);
       setBalance([]);
       setBalanceLow([]);
       setBalanceHigh([]);
     }
+    setLoading(false);
   };
 
   const handleSliderChange = (event, value, field) => {
@@ -172,7 +177,7 @@ const PolynomialRootFinder = () => {
         align: "left", // Center align the subtitle
         verticalAlign: "top", // Place the subtitle at the top
         y: 30, // Adjust vertical position if needed
-        x:20,
+        x: 20,
         style: {
           fontSize: 16, // 변경된 부분
           fontWeight: "700", // 변경된 부분
@@ -184,7 +189,7 @@ const PolynomialRootFinder = () => {
         align: "left", // Center align the title
         verticalAlign: "top", // Place the title at the bottom
         y: 75, // Adjust vertical position if needed
-        x:20,
+        x: 20,
         style: {
           fontSize: 28, // 변경된 부분
           fontWeight: "normal", // 변경된 부분
@@ -546,15 +551,6 @@ const PolynomialRootFinder = () => {
           )}
           {calculatedValue === null && (
             <div style={{ marginBottom: 20 }}>
-              {/* <div>
-                        <p>Calculated Value: {calculatedValue}</p>
-                        <p>Balance:</p>
-                        <ul>
-                          {balance.map((value, index) => (
-                            <li key={index}>{value}</li>
-                          ))}
-                        </ul>
-                      </div> */}
               <div
                 style={{
                   backgroundColor: "#eee",
@@ -577,16 +573,26 @@ const PolynomialRootFinder = () => {
               p: 1.35,
               fontSize: 18,
               textAlign: "center",
+
               backgroundColor: "#666",
               color: "#fff",
               textTransform: "capitalize",
               ":hover": {
                 backgroundColor: "#211d1d",
               },
+              ":disabled": {
+                color: "#f3f3f3",
+              },
             }}
-            onClick={handleFindRoots}
+            onClick={async () => {
+              // 클릭 후 1초 후에 계산 시작
+              setLoading(true);
+              await new Promise((resolve) => setTimeout(resolve, 1000));
+              handleFindRoots();
+            }}
+            disabled={loading}
           >
-            Calculate
+            {loading ? "Calculating..." : "Calculate"}
           </Button>
         </Box>
       </Box>
