@@ -68,6 +68,7 @@ const PolynomialRootFinder = () => {
     }
 
     // Push outvalue for outvaluetime
+
     for (let i = 0; i < outvaluetime; i++) {
       coefficients.push(-outvalue);
     }
@@ -80,7 +81,7 @@ const PolynomialRootFinder = () => {
       const calculatedValue = 1 / firstRoot - 1;
       setCalculatedValue(calculatedValue);
       const sharpe_ratio = 1.0;
-      const z = 0.2;
+      const z = 0.05;
       const sigma = calculatedValue * sharpe_ratio;
       const balanceArray = [...coefficients];
       const balanceLowArray = [...coefficients];

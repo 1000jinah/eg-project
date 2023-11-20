@@ -6,11 +6,11 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 
-const PolynomialRootFinder = () => {
+const SliderSimu = () => {
   const [initialInvestment, setInitialInvestment] = useState(100);
   const [monthlyInvestment, setMonthlyInvestment] = useState(10);
   const [investmentPeriod, setInvestmentPeriod] = useState(2);
-  const [targetMoney, setTargetMoney] = useState(550);
+  const [targetMoney, setTargetMoney] = useState(1000);
   const [roots, setRoots] = useState([]);
   const [calculatedValue, setCalculatedValue] = useState(null);
   const [balance, setBalance] = useState([]);
@@ -73,11 +73,11 @@ const PolynomialRootFinder = () => {
       const calculatedValue = 1 / firstRoot - 1;
       setCalculatedValue(calculatedValue);
       const sharpe_ratio = 1.0;
-      const z = 0.2;
+      const z = 0.1;
       const sigma = calculatedValue * sharpe_ratio;
       const balanceArray = [...coefficients];
       const balanceLowArray = [...coefficients];
-      const balanceHightArray = [...coefficients];
+      const balanceHighArray = [...coefficients];
 
       for (let i = 1; i <= monthlyInvestmentPeriod; i++) {
         balanceArray[i] =
@@ -85,14 +85,14 @@ const PolynomialRootFinder = () => {
         balanceLowArray[i] =
           balanceLowArray[i - 1] * (1.0 + calculatedValue - z * sigma) +
           balanceLowArray[i];
-        balanceHightArray[i] =
-          balanceHightArray[i - 1] * (1.0 + calculatedValue + z * sigma) +
-          balanceHightArray[i];
+        balanceHighArray[i] =
+          balanceHighArray[i - 1] * (1.0 + calculatedValue + z * sigma) +
+          balanceHighArray[i];
       }
 
       setBalance(balanceArray);
       setBalanceLow(balanceLowArray);
-      setBalanceHigh(balanceHightArray);
+      setBalanceHigh(balanceHighArray);
     } else {
       setCalculatedValue(null);
       setBalance([]);
@@ -153,6 +153,7 @@ const PolynomialRootFinder = () => {
   useEffect(() => {
     setChartOptions((prevOptions) => ({
       ...prevOptions,
+
       legend: {
         layout: "horizontal",
         align: "right",
@@ -166,15 +167,16 @@ const PolynomialRootFinder = () => {
         marker: false,
         useHTML: true,
         labelFormatter: function () {
-          const seriesLineColor = this.userOptions.lineColor;
+          const seriesColor = this.userOptions.color;
           return `<span style="display:flex; place-items: center; gap: 3px;">
-                  <div style="background-color: ${seriesLineColor}; width:15px; height:15px; border-radius: 50%; float:left; margin-right:5px;"></div>
+                  <div style="background-color: ${seriesColor}; width:15px; height:15px; border-radius: 50%; float:left; margin-right:5px;"></div>
                   <span>${this.name}</span></span>`;
         },
       },
       series: [
         {
-          type: "line",
+          type: "area",
+          fillColor: "transparent",
           color: "#6ab9fd",
           name: "Balance_Low",
           data: balanceLow,
@@ -188,8 +190,9 @@ const PolynomialRootFinder = () => {
           },
         },
         {
-          type: "line",
+          type: "area",
           color: "#ff754b",
+          fillColor: "transparent",
           name: "Balance",
           data: balance,
           marker: {
@@ -202,8 +205,9 @@ const PolynomialRootFinder = () => {
           },
         },
         {
-          type: "line",
+          type: "area",
           color: "#ffcebf",
+          fillColor: "transparent",
           name: "Balance_High",
           data: balanceHigh,
           marker: {
@@ -236,7 +240,7 @@ const PolynomialRootFinder = () => {
         enabled: false, // Hide the Highcharts credits
       },
     }));
-  }, [balance, balanceLow, balanceHigh]);
+  }, [initialInvestment, targetMoney, balance, balanceLow, balanceHigh]);
   useEffect(() => {
     const style = document.createElement("style");
     style.innerHTML = `
@@ -429,14 +433,14 @@ const PolynomialRootFinder = () => {
           {calculatedValue !== null && (
             <div style={{ marginBottom: 20 }}>
               {/* <div>
-            <p>Calculated Value: {calculatedValue}</p>
-            <p>Balance:</p>
-            <ul>
-              {balance.map((value, index) => (
-                <li key={index}>{value}</li>
-              ))}
-            </ul>
-          </div> */}
+                <p>Calculated Value: {calculatedValue}</p>
+                <p>Balance:</p>
+                <ul>
+                  {balance.map((value, index) => (
+                    <li key={index}>{value}</li>
+                  ))}
+                </ul>
+              </div> */}
               <HighchartsReact highcharts={Highcharts} options={chartOptions} />
             </div>
           )}
@@ -458,4 +462,4 @@ const PolynomialRootFinder = () => {
   );
 };
 
-export default PolynomialRootFinder;
+export default SliderSimu;
