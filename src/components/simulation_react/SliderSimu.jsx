@@ -569,19 +569,33 @@ const SliderSimu = () => {
               <HighchartsReact highcharts={Highcharts} options={chartOptions} />
             </div>
           )}
-          <Button
+          <Box
             sx={{
-              minWidth: 300,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
               mb: 3,
-              textAlign: "center",
-              backgroundColor: "#211d1d",
-              color: "#fff",
-              textTransform: "capitalize",
             }}
-            onClick={handleFindRoots}
           >
-            Calculate
-          </Button>
+            <Typography sx={{ color: "#666", fontSize: "0.87rem" }}>
+              버튼 사용 가능 (슬라이더, 인풋으로도 가능)
+            </Typography>
+            <Box sx={{ display: "flex", justifyContent: "flex-end", ml: 3 }}>
+              <Button
+                sx={{
+                  minWidth: 300,
+
+                  textAlign: "center",
+                  backgroundColor: "#211d1d",
+                  color: "#fff",
+                  textTransform: "capitalize",
+                }}
+                onClick={handleFindRoots}
+              >
+                Calculate
+              </Button>
+            </Box>
+          </Box>
           <Accordion
             expanded={expanded === "panel1"}
             onChange={handleChange("panel1")}
