@@ -5,6 +5,7 @@ import Slider from "@mui/material/Slider";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Input from "@mui/material/Input"; // 추가된 부분
 
 const SliderSimu = () => {
   const [initialInvestment, setInitialInvestment] = useState(100);
@@ -16,6 +17,7 @@ const SliderSimu = () => {
   const [balance, setBalance] = useState([]);
   const [balanceLow, setBalanceLow] = useState([]);
   const [balanceHigh, setBalanceHigh] = useState([]);
+  const [editMode, setEditMode] = useState(""); // 추가된 부분
 
   const findRoots = (coefficients) => {
     const tolerance = 1e-10;
@@ -120,6 +122,38 @@ const SliderSimu = () => {
     }
   };
 
+  const handleEdit = (field) => {
+    setEditMode(field);
+  };
+
+  const handleInputEnter = (field) => (event) => {
+    if (event.key === "Enter") {
+      setEditMode("");
+      const numericValue = parseFloat(event.target.value);
+      switch (field) {
+        case "initialInvestment":
+          setInitialInvestment(numericValue);
+          break;
+        case "monthlyInvestment":
+          setMonthlyInvestment(numericValue);
+          break;
+        case "investmentPeriod":
+          setInvestmentPeriod(numericValue);
+          break;
+        case "targetMoney":
+          setTargetMoney(numericValue);
+          break;
+        default:
+          break;
+      }
+      handleFindRoots();
+    }
+  };
+
+  const handleInputBlur = () => {
+    setEditMode("");
+  };
+
   const [chartOptions, setChartOptions] = useState({
     title: {
       text: "Balance Over Time",
@@ -177,9 +211,9 @@ const SliderSimu = () => {
         {
           type: "area",
           fillColor: "transparent",
-          color: "#6ab9fd",
-          name: "Balance_Low",
-          data: balanceLow,
+          color: "#ffcebf",
+          name: "Balance_High",
+          data: balanceHigh,
           marker: {
             enabled: false,
             radius: 4,
@@ -206,10 +240,10 @@ const SliderSimu = () => {
         },
         {
           type: "area",
-          color: "#ffcebf",
           fillColor: "transparent",
-          name: "Balance_High",
-          data: balanceHigh,
+          color: "#6ab9fd",
+          name: "Balance_Low",
+          data: balanceLow,
           marker: {
             enabled: false,
             radius: 4,
@@ -257,6 +291,22 @@ const SliderSimu = () => {
       document.head.removeChild(style);
     };
   }, []);
+
+  const renderInputField = (field, value) => {
+    return (
+      <Input
+        type="number"
+        value={value}
+        onChange={(event) =>
+          handleSliderChange(event, event.target.value, field)
+        }
+        onKeyDown={handleInputEnter(field)}
+        onBlur={handleInputBlur}
+        autoFocus
+      />
+    );
+  };
+
   return (
     <Box sx={{ m: 5 }}>
       <Typography
@@ -280,15 +330,21 @@ const SliderSimu = () => {
               >
                 Investment Period
               </Typography>
-              <Typography
-                sx={{
-                  color: "#211d1d",
-                  fontSize: "1.2rem",
-                  fontWeight: "bold",
-                }}
-              >
-                {investmentPeriod} Year
-              </Typography>
+              {editMode === "investmentPeriod" ? (
+                renderInputField("investmentPeriod", investmentPeriod)
+              ) : (
+                <Typography
+                  sx={{
+                    color: "#211d1d",
+                    fontSize: "1.2rem",
+                    fontWeight: "bold",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => handleEdit("investmentPeriod")}
+                >
+                  {investmentPeriod} Year
+                </Typography>
+              )}
             </Box>
             <Slider
               sx={{ color: "#211d1d" }}
@@ -314,15 +370,21 @@ const SliderSimu = () => {
               >
                 Monthly Investment
               </Typography>
-              <Typography
-                sx={{
-                  color: "#211d1d",
-                  fontSize: "1.2rem",
-                  fontWeight: "bold",
-                }}
-              >
-                $ {monthlyInvestment}
-              </Typography>
+              {editMode === "monthlyInvestment" ? (
+                renderInputField("monthlyInvestment", monthlyInvestment)
+              ) : (
+                <Typography
+                  sx={{
+                    color: "#211d1d",
+                    fontSize: "1.2rem",
+                    fontWeight: "bold",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => handleEdit("monthlyInvestment")}
+                >
+                  $ {monthlyInvestment}
+                </Typography>
+              )}
             </Box>
             <Slider
               sx={{ color: "#211d1d" }}
@@ -348,15 +410,21 @@ const SliderSimu = () => {
               >
                 Initial Investment
               </Typography>
-              <Typography
-                sx={{
-                  color: "#211d1d",
-                  fontSize: "1.2rem",
-                  fontWeight: "bold",
-                }}
-              >
-                $ {initialInvestment}
-              </Typography>
+              {editMode === "initialInvestment" ? (
+                renderInputField("initialInvestment", initialInvestment)
+              ) : (
+                <Typography
+                  sx={{
+                    color: "#211d1d",
+                    fontSize: "1.2rem",
+                    fontWeight: "bold",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => handleEdit("initialInvestment")}
+                >
+                  $ {initialInvestment}
+                </Typography>
+              )}
             </Box>
             <Slider
               sx={{ color: "#211d1d" }}
@@ -382,15 +450,21 @@ const SliderSimu = () => {
               >
                 Target Money
               </Typography>
-              <Typography
-                sx={{
-                  color: "#211d1d",
-                  fontSize: "1.2rem",
-                  fontWeight: "bold",
-                }}
-              >
-                $ {targetMoney}
-              </Typography>
+              {editMode === "targetMoney" ? (
+                renderInputField("targetMoney", targetMoney)
+              ) : (
+                <Typography
+                  sx={{
+                    color: "#211d1d",
+                    fontSize: "1.2rem",
+                    fontWeight: "bold",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => handleEdit("targetMoney")}
+                >
+                  $ {targetMoney}
+                </Typography>
+              )}
             </Box>
             <Slider
               sx={{ color: "#211d1d" }}
@@ -432,15 +506,6 @@ const SliderSimu = () => {
         <Box sx={{ width: "70%", textAlign: "right" }}>
           {calculatedValue !== null && (
             <div style={{ marginBottom: 20 }}>
-              {/* <div>
-                <p>Calculated Value: {calculatedValue}</p>
-                <p>Balance:</p>
-                <ul>
-                  {balance.map((value, index) => (
-                    <li key={index}>{value}</li>
-                  ))}
-                </ul>
-              </div> */}
               <HighchartsReact highcharts={Highcharts} options={chartOptions} />
             </div>
           )}
@@ -456,6 +521,15 @@ const SliderSimu = () => {
           >
             Calculate
           </Button>
+          <div>
+            <p>Calculated Value: {calculatedValue}</p>
+            <p>Balance:</p>
+            <ul>
+              {balance.map((value, index) => (
+                <li key={index}>{value}</li>
+              ))}
+            </ul>
+          </div>
         </Box>
       </Box>
     </Box>
