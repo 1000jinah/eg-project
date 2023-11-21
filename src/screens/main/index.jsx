@@ -61,12 +61,12 @@ const Main = () => {
         <SliderSimu />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        피드백 정리 목록
+        피드백 정리 목록 ( TARGET 기준 )
         <br />
-        1. 자동 calculate
+        1. 자동 calculate ⭕
         <br />
         2. 단위값을 클릭시에 input으로 변해서 슬라이더 값을 input으로 변하게 할
-        수있게
+        수있게 ⭕
         <br />
         3. 우상향으로 튀는 거<br />
         4. 현재 차트(현황) + 사용자가 조건 설정한 것이 되는지(가능성)

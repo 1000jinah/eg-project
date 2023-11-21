@@ -6,7 +6,13 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Input from "@mui/material/Input"; // 추가된 부분
-
+//
+import { styled } from "@mui/material/styles";
+import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
+import MuiAccordion from "@mui/material/Accordion";
+import MuiAccordionSummary from "@mui/material/AccordionSummary";
+import MuiAccordionDetails from "@mui/material/AccordionDetails";
+//
 const SliderSimu = () => {
   const [initialInvestment, setInitialInvestment] = useState(100);
   const [monthlyInvestment, setMonthlyInvestment] = useState(10);
@@ -18,7 +24,50 @@ const SliderSimu = () => {
   const [balanceLow, setBalanceLow] = useState([]);
   const [balanceHigh, setBalanceHigh] = useState([]);
   const [editMode, setEditMode] = useState(""); // 추가된 부분
+  const [expanded, setExpanded] = React.useState("panel1");
 
+  const handleChange = (panel) => (event, newExpanded) => {
+    setExpanded(newExpanded ? panel : false);
+  };
+  //
+  const Accordion = styled((props) => (
+    <MuiAccordion disableGutters elevation={0} square {...props} />
+  ))(({ theme }) => ({
+    border: `1px solid ${theme.palette.divider}`,
+    "&:not(:last-child)": {
+      borderBottom: 0,
+    },
+    "&:before": {
+      display: "none",
+    },
+  }));
+  const AccordionSummary = styled((props) => (
+    <MuiAccordionSummary
+      expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem" }} />}
+      {...props}
+    />
+  ))(({ theme }) => ({
+    backgroundColor:
+      theme.palette.mode === "dark"
+        ? "rgba(255, 255, 255, .05)"
+        : "rgba(0, 0, 0, .03)",
+    flexDirection: "row-reverse",
+    "& .MuiAccordionSummary-expandIconWrapper": {
+      transform: "rotate(-90deg)",
+    },
+    "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
+      transform: "rotate(90deg)",
+    },
+    "& .MuiAccordionSummary-content": {
+      marginLeft: theme.spacing(1),
+    },
+  }));
+
+  const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
+    padding: theme.spacing(2),
+    borderTop: "1px solid rgba(0, 0, 0, .125)",
+  }));
+  //
   const findRoots = (coefficients) => {
     const tolerance = 1e-10;
     const maxIterations = 1000;
@@ -120,6 +169,9 @@ const SliderSimu = () => {
       default:
         break;
     }
+
+    // Call handleFindRoots whenever input changes
+    handleFindRoots();
   };
 
   const handleEdit = (field) => {
@@ -146,6 +198,8 @@ const SliderSimu = () => {
         default:
           break;
       }
+
+      // Call handleFindRoots whenever input changes
       handleFindRoots();
     }
   };
@@ -183,6 +237,11 @@ const SliderSimu = () => {
       },
     ],
   });
+
+  useEffect(() => {
+    // Call handleFindRoots whenever any of the relevant state values change
+    handleFindRoots();
+  }, [initialInvestment, monthlyInvestment, investmentPeriod, targetMoney]);
 
   useEffect(() => {
     setChartOptions((prevOptions) => ({
@@ -275,6 +334,7 @@ const SliderSimu = () => {
       },
     }));
   }, [initialInvestment, targetMoney, balance, balanceLow, balanceHigh]);
+
   useEffect(() => {
     const style = document.createElement("style");
     style.innerHTML = `
@@ -503,7 +563,7 @@ const SliderSimu = () => {
         </Box>
 
         {/* <p>Roots: {roots.join(", ")}</p> */}
-        <Box sx={{ width: "70%", textAlign: "right" }}>
+        <Box sx={{ width: "70%" }}>
           {calculatedValue !== null && (
             <div style={{ marginBottom: 20 }}>
               <HighchartsReact highcharts={Highcharts} options={chartOptions} />
@@ -512,6 +572,7 @@ const SliderSimu = () => {
           <Button
             sx={{
               minWidth: 300,
+              mb: 3,
               textAlign: "center",
               backgroundColor: "#211d1d",
               color: "#fff",
@@ -521,15 +582,27 @@ const SliderSimu = () => {
           >
             Calculate
           </Button>
-          <div>
-            <p>Calculated Value: {calculatedValue}</p>
-            <p>Balance:</p>
-            <ul>
-              {balance.map((value, index) => (
-                <li key={index}>{value}</li>
-              ))}
-            </ul>
-          </div>
+          <Accordion
+            expanded={expanded === "panel1"}
+            onChange={handleChange("panel1")}
+          >
+            <AccordionSummary
+              aria-controls="panel1d-content"
+              id="panel1d-header"
+            >
+              <Typography>Calculated Value: {calculatedValue}</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>Balance:</Typography>
+              <Box>
+                {balance.map((value, index) => (
+                  <p style={{ margin: 0 }} key={index}>
+                    {value}
+                  </p>
+                ))}
+              </Box>
+            </AccordionDetails>
+          </Accordion>
         </Box>
       </Box>
     </Box>
