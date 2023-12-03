@@ -75,39 +75,50 @@ const PolynomialRootFinder = () => {
 
     const calculatedRoots = findRoots(coefficients);
     setRoots(calculatedRoots);
-    console.log(calculatedRoots,"calculatedRoots")
+    console.log(calculatedRoots, "calculatedRoots");
     if (calculatedRoots.length > 0) {
       const firstRoot = calculatedRoots[0];
-      
+
       const calculatedValue = 1 / firstRoot - 1;
       setCalculatedValue(calculatedValue);
-      const sharpe_ratio = 1.0;
-      const z = .1;
-      const sigma = calculatedValue * sharpe_ratio;
-      const balanceArray = [...coefficients];
-      const balanceLowArray = [...coefficients];
-      const balanceHighArray = [...coefficients];
+      console.log(calculatedValue, "calculatedValuecalculatedValue");
+      if (calculatedValue < 0 || calculatedValue > 0.15) {
+        // Alert based on the condition
+        if (calculatedValue < 0) {
+          alert("calculatedValue is less than 0");
+        } else {
+          alert("calculatedValue is greater than 0.15");
+        }
 
-      for (let i = 1; i <= monthlyInvestmentPeriod + outvaluetime; i++) {
-        balanceArray[i] =
-          balanceArray[i - 1] * (1.0 + calculatedValue) + balanceArray[i];
-        balanceLowArray[i] =
-          balanceLowArray[i - 1] * (1.0 + calculatedValue - z * sigma) +
-          balanceLowArray[i];
-        balanceHighArray[i] =
-          balanceHighArray[i - 1] * (1.0 +calculatedValue + z * sigma) +
-          balanceHighArray[i];
+        // Reset chart data to empty array
+        setBalance([]);
+      } else {
+        const sharpe_ratio = 1.0;
+        const z = 0.1;
+        const layer = 5;
+        const sigma = calculatedValue * sharpe_ratio;
+        const balanceArray = [];
+
+        for (let i = 0; i < layer; i++) {
+          balanceArray.push([...coefficients]);
+          for (let j = 1; j <= monthlyInvestmentPeriod + outvaluetime; j++) {
+            const n = -layer + 2 * i + 1;
+            console.log(n, "v");
+            balanceArray[i][j] =
+              balanceArray[i][j - 1] * (1.0 + calculatedValue + n * z * sigma) +
+              balanceArray[i][j];
+          }
+          console.log(
+            balanceArray,
+            "balanceArraybalanceArraybalanceArraybalanceArray"
+          );
+        }
+
+        setBalance(balanceArray);
       }
-      //   await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      setBalance(balanceArray);
-      setBalanceLow(balanceLowArray);
-      setBalanceHigh(balanceHighArray);
     } else {
       setCalculatedValue(null);
       setBalance([]);
-      setBalanceLow([]);
-      setBalanceHigh([]);
     }
     setLoading(false);
   };
@@ -150,24 +161,29 @@ const PolynomialRootFinder = () => {
     },
     series: [
       {
+        type: "area",
+        color: "#ff754b",
+        lineColor: "#ff754b",
+        fillColor: "transparent",
         name: "Balance",
         data: [],
-      },
-      {
-        name: "Balance_Low",
-        data: [],
-      },
-      {
-        name: "Balance_High",
-        data: [],
+        marker: {
+          enabled: false,
+          radius: 4,
+          lineWidth: 0.3,
+          lineColor: "transparent",
+          fillColor: "#ff754b",
+          symbol: "circle",
+        },
       },
     ],
   });
 
   useEffect(() => {
     const highestPositiveBalance = Math.max(
-      ...balance.filter((value) => value > 0)
+      ...balance.flat().filter((value) => value > 0)
     );
+
     setChartOptions((prevOptions) => ({
       ...prevOptions,
       chart: {
@@ -241,78 +257,43 @@ const PolynomialRootFinder = () => {
         },
       },
       series: [
-        {
+        // {
+        //   type: "area",
+        //   color: "#ff754b",
+        //   lineColor: "#ff754b",
+        //   fillColor: "transparent",
+        //   name: "Balance",
+        //   data: balance.flat(),
+        //   marker: {
+        //     enabled: false,
+        //     radius: 4,
+        //     lineWidth: 0.3,
+        //     lineColor: "transparent",
+        //     fillColor: "#ff754b",
+        //     symbol: "circle",
+        //   },
+        // },
+        // Add additional series for each layer
+        ...balance.map((layerData, index) => ({
           type: "area",
-          color: "#ffcebf",
-          lineColor: "#ffcebf",
+          color: `rgba(255, 117, 75, 0.${index + 2})`, // Adjust the color based on your preference
+          lineColor: `rgba(255, 117, 75, 0.${index + 2})`,
           fillColor: "transparent",
-          name: "Balance_High",
-          data: balanceHigh,
+          name: `Balance Layer ${index + 1}`,
+          data: layerData,
           marker: {
             enabled: false,
             radius: 4,
             lineWidth: 0.3,
             lineColor: "transparent",
-            fillColor: "#ffcebf",
+            fillColor: `rgba(255, 117, 75, 0.${index + 2})`,
             symbol: "circle",
           },
-        },
-        {
-          type: "area",
-          color: "#ff754b",
-          lineColor: "#ff754b",
-          fillColor: "transparent",
-
-          name: "Balance",
-          data: balance,
-          marker: {
-            enabled: false,
-            radius: 4,
-            lineWidth: 0.3,
-            lineColor: "transparent",
-            fillColor: "#ff754b",
-            symbol: "circle",
-          },
-        },
-        {
-          type: "area",
-          color: "#6ab9fd",
-          lineColor: "#6ab9fd",
-          fillColor: "transparent",
-
-          name: "Balance_Low",
-          data: balanceLow,
-          marker: {
-            enabled: false,
-            radius: 4,
-            lineWidth: 0.3,
-            lineColor: "transparent",
-            fillColor: "#6ab9fd",
-            symbol: "circle",
-          },
-        },
+        })),
       ],
-      tooltip: {
-        shared: true,
-        crosshairs: true,
-        borderColor: "#000",
-        backgroundColor: "#fff",
-        xDateFormat: "%b %e, %Y",
-        useHTML: true,
-        headerFormat:
-          '<table style="border:0px;"><tr><td colspan="2" style="border:0px; height:20px;"><span style="color:#808080; font-size:14px;">{point.key}</span></td></tr>',
-        pointFormat:
-          '<tr><td style="border:0px; height:20px;"><div style="width:11px; height:11px; background-color:{series.color}; border:1px solid #000; border-radius:50%; float:left; margin-top:8px;"></div>' +
-          '<span style="font-size:18px; color:{series.color}; padding-left:10px;">{series.name}</span></td>' +
-          '<td style="border:0px; height:20px;"><span style="font-size:18px; font-weight:bold; padding-left:100px;">${point.y}</span></td></tr>',
-        footerFormat: "</table>",
-        valueDecimals: 2,
-      },
-      credits: {
-        enabled: false, // Hide the Highcharts credits
-      },
     }));
-  }, [balance, balanceLow, balanceHigh]);
+  }, [balance]);
+
   useEffect(() => {
     const style = document.createElement("style");
     style.innerHTML = `
@@ -596,6 +577,7 @@ const PolynomialRootFinder = () => {
           >
             {loading ? "Calculating..." : "Calculate"}
           </Button>
+          {calculatedValue}
         </Box>
       </Box>
     </Box>
@@ -603,4 +585,3 @@ const PolynomialRootFinder = () => {
 };
 
 export default PolynomialRootFinder;
-

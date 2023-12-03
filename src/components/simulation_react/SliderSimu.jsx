@@ -29,6 +29,7 @@ const SliderSimu = () => {
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
+
   //
   const Accordion = styled((props) => (
     <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -41,6 +42,7 @@ const SliderSimu = () => {
       display: "none",
     },
   }));
+
   const AccordionSummary = styled((props) => (
     <MuiAccordionSummary
       expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem" }} />}
@@ -142,13 +144,11 @@ const SliderSimu = () => {
       }
 
       setBalance(balanceArray);
-      setBalanceLow(balanceLowArray);
-      setBalanceHigh(balanceHighArray);
+    
     } else {
       setCalculatedValue(null);
       setBalance([]);
-      setBalanceLow([]);
-      setBalanceHigh([]);
+   
     }
   };
 
@@ -170,8 +170,7 @@ const SliderSimu = () => {
         break;
     }
 
-    // Call handleFindRoots whenever input changes
-    handleFindRoots();
+
   };
 
   const handleEdit = (field) => {
@@ -199,8 +198,6 @@ const SliderSimu = () => {
           break;
       }
 
-      // Call handleFindRoots whenever input changes
-      handleFindRoots();
     }
   };
 
@@ -224,15 +221,15 @@ const SliderSimu = () => {
     },
     series: [
       {
+        name: "Balance_High",
+        data: [],
+      },
+      {
         name: "Balance",
         data: [],
       },
       {
         name: "Balance_Low",
-        data: [],
-      },
-      {
-        name: "Balance_High",
         data: [],
       },
     ],
@@ -333,7 +330,7 @@ const SliderSimu = () => {
         enabled: false, // Hide the Highcharts credits
       },
     }));
-  }, [initialInvestment, targetMoney, balance, balanceLow, balanceHigh]);
+  }, [balance, balanceLow, balanceHigh]);
 
   useEffect(() => {
     const style = document.createElement("style");
@@ -569,33 +566,29 @@ const SliderSimu = () => {
               <HighchartsReact highcharts={Highcharts} options={chartOptions} />
             </div>
           )}
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-end",
-              mb: 3,
-            }}
-          >
-            <Typography sx={{ color: "#666", fontSize: "0.87rem" }}>
-              버튼 사용 가능 (슬라이더, 인풋으로도 가능)
-            </Typography>
-            <Box sx={{ display: "flex", justifyContent: "flex-end", ml: 3 }}>
-              <Button
-                sx={{
-                  minWidth: 300,
 
-                  textAlign: "center",
-                  backgroundColor: "#211d1d",
-                  color: "#fff",
-                  textTransform: "capitalize",
-                }}
-                onClick={handleFindRoots}
-              >
-                Calculate
-              </Button>
-            </Box>
-          </Box>
+          {/* <Box
+              sx={{
+                display: "flex",
+                width: "100%",
+                justifyContent: "center",
+                mb: 3,
+                backgroundColor: "#666",
+                p:2,
+                color: "#fff",
+              }}
+            >
+              {loading ? (
+                <Typography sx={{ fontSize: "0.87rem" }}>
+                  Calculating...
+                </Typography>
+              ) : (
+                <Typography sx={{ fontSize: "0.87rem" }}>
+                  {calculatedValue !== null ? "Complete" : ""}
+                </Typography>
+              )}
+            </Box> */}
+
           <Accordion
             expanded={expanded === "panel1"}
             onChange={handleChange("panel1")}
