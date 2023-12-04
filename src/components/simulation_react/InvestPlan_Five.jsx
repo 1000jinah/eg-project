@@ -14,6 +14,7 @@ const PolynomialRootFinder = () => {
   const [outvaluetime, setOutValueTime] = useState(1);
   const [roots, setRoots] = useState([]);
   const [calculatedValue, setCalculatedValue] = useState(null);
+  const [calculatedValueYearly, setCalculatedValueYearly] = useState(null);
   const [balance, setBalance] = useState([]);
   const [balanceLow, setBalanceLow] = useState([]);
   const [balanceHigh, setBalanceHigh] = useState([]);
@@ -80,14 +81,20 @@ const PolynomialRootFinder = () => {
       const firstRoot = calculatedRoots[0];
 
       const calculatedValue = 1 / firstRoot - 1;
+      const calculatedValueYearly = (1 + calculatedValue) ** 12 - 1;
+      console.log(
+        calculatedValueYearly,
+        "calculatedValueYearlycalculatedValueYearlycalculatedValueYearly"
+      );
       setCalculatedValue(calculatedValue);
+      setCalculatedValueYearly(calculatedValueYearly);
       console.log(calculatedValue, "calculatedValuecalculatedValue");
-      if (calculatedValue < 0 || calculatedValue > 0.15) {
+      if (calculatedValueYearly < 0 || calculatedValueYearly > 0.15) {
         // Alert based on the condition
-        if (calculatedValue < 0) {
-          alert("calculatedValue is less than 0");
+        if (calculatedValueYearly < 0) {
+          alert("calculatedValueYearly is less than 0");
         } else {
-          alert("calculatedValue is greater than 0.15");
+          alert("calculatedValueYearly is greater than 0.15");
         }
 
         // Reset chart data to empty array
@@ -577,7 +584,11 @@ const PolynomialRootFinder = () => {
           >
             {loading ? "Calculating..." : "Calculate"}
           </Button>
-          {calculatedValue}
+          <Box>
+            irr: {calculatedValue}
+            <br />
+            irr_yearly: {calculatedValueYearly}
+          </Box>
         </Box>
       </Box>
     </Box>
