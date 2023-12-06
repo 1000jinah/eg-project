@@ -108,6 +108,10 @@ const HorizontalStepper = () => {
   const handleVerticalReset = () => {
     setActiveVerticalStep(0);
   };
+
+  const handleStepClick = (index) => {
+    setActiveStep(index);
+  };
   return (
     <div style={{ backgroundColor: "#fef8f3", height: "100vh" }}>
       <Header />
@@ -122,7 +126,9 @@ const HorizontalStepper = () => {
                 display: "flex",
                 alignItems: "center",
                 margin: "25px 0",
+                cursor: "pointer",
               }}
+              onClick={() => handleStepClick(index)} // 클릭 시 해당 스텝으로 이동
             >
               {index === activeStep ? (
                 // 활성 스텝에 해당하는 경우
@@ -619,17 +625,17 @@ const HorizontalStepper = () => {
                     sx={{
                       position: "absolute",
                       bottom: 25,
-                      color: "#f3f5f7",
-                      backgroundColor: "#df3232",
+                      border: "1px solid #df3232",
+                      color: "#df3232",
+                      backgroundColor: "#fff",
                       textTransform: "capitalize",
-                      //   p: "11px 10px",
                       p: "8px 10px",
                       fontSize: 16,
                       borderRadius: "5px",
-                      width: 300,
+                      width: 150,
 
                       ":hover": {
-                        backgroundColor: "#df3232",
+                        backgroundColor: "#fff",
                       },
                     }}
                     onClick={handleNext}

@@ -770,27 +770,7 @@ const PolynomialRootFinder = () => {
   const [firstRoots, setFirstRoots] = useState(false);
   const [calculatedRoots, setCalculatedRoots] = useState(null);
   const [editingField, setEditingField] = useState(null);
-  const [iconRotation, setIconRotation] = useState(0);
 
-  useEffect(() => {
-    let rotationInterval;
-
-    if (loading) {
-      // Loading이 true인 경우에만 아이콘을 회전시키는 interval을 설정
-      rotationInterval = setInterval(() => {
-        setIconRotation((prevRotation) => prevRotation + 10); // 회전 각도 증가
-      }, 100);
-    } else {
-      // Loading이 false이면 interval을 해제하고 아이콘 각도를 초기화
-      clearInterval(rotationInterval);
-      setIconRotation(0);
-    }
-
-    return () => {
-      // 컴포넌트가 unmount되거나 loading이 변경될 때 interval을 해제
-      clearInterval(rotationInterval);
-    };
-  }, [loading]);
   const findRoots = (coefficients) => {
     const tolerance = 1e-10;
     const maxIterations = 1000;
@@ -936,54 +916,95 @@ const PolynomialRootFinder = () => {
     setEditingField(null);
   };
 
+  // handleTextFieldChange 함수 내에서 값 체크 및 설정 부분 수정
   const handleTextFieldChange = (field, value) => {
     const numericValue = parseFloat(value);
-    if (!isNaN(numericValue)) {
-      switch (field) {
-        case "initialInvestment":
-          setInitialInvestment(numericValue);
-          break;
-        case "monthlyInvestment":
-          setMonthlyInvestment(numericValue);
-          break;
-        case "investmentPeriod":
-          setInvestmentPeriod(numericValue);
-          break;
-        case "outvalue":
-          setOutValue(numericValue);
-          break;
-        case "outvaluetime":
-          setOutValueTime(numericValue);
-          break;
-        default:
-          break;
-      }
-    } else {
-      alert("Invalid input. Please enter a numeric value.");
+
+    // 입력된 값이 null이거나 0 또는 0보다 작은 경우 1로 설정
+    // const sanitizedValue =
+    //   isNaN(numericValue) || numericValue < 0 ? 1 : numericValue;
+
+    switch (field) {
+      case "initialInvestment":
+        setInitialInvestment(numericValue);
+        break;
+      case "monthlyInvestment":
+        setMonthlyInvestment(numericValue);
+        break;
+      case "investmentPeriod":
+        setInvestmentPeriod(numericValue);
+        break;
+      case "outvalue":
+        setOutValue(numericValue);
+        break;
+      case "outvaluetime":
+        setOutValueTime(numericValue);
+        break;
+      default:
+        break;
     }
+
     // handleStopEditing(); // Stop editing after changing the value
   };
 
-  const renderEditableField = (field, label, value) => {
+  // renderEditableField 함수 내에서 TextField 부분 수정
+  const renderEditableField = (field, label, value, money = "", date = "") => {
+    const width = value ? value.toString().length * 9 : 0;
     return (
-      <TextField
+      <Box
         sx={{
-          ".MuiOutlinedInput-input": {
-            padding: 0,
-            width: "auto", // me
-          },
-          ".MuiOutlinedInput-notchedOutline": {
-            border: "none",
-          },
+          display: "flex",
+          alignItems: "center",
         }}
-        type="number"
-        value={value}
-        // label={label}
-        variant="outlined"
-        onChange={(e) => handleTextFieldChange(field, e.target.value)}
-        onBlur={handleStopEditing}
-        autoFocus
-      />
+      >
+        <Typography
+          sx={{
+            color: "#202225",
+
+            fontSize: 16,
+            fontWeight: "bold",
+          }}
+        >
+          {money}
+        </Typography>
+        <TextField
+          sx={{
+            ".MuiOutlinedInput-input": {
+              padding: 0,
+              ml: 0.5,
+              mr: 0.5,
+              width: `${width}px`, // 계산된 width로 설정
+              color: "#202225",
+              fontSize: 16,
+              fontWeight: "bold",
+            },
+            ".MuiOutlinedInput-notchedOutline": {
+              border: "none",
+              p: 0,
+            },
+          }}
+          value={value} // 단위를 함께 표시
+          variant="outlined"
+          onFocus={(e) => e.target.select()} // 이 부분 추가
+          onChange={(e) => handleTextFieldChange(field, e.target.value)}
+          onBlur={handleStopEditing}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleStopEditing();
+            }
+          }}
+          autoFocus
+        />
+        <Typography
+          sx={{
+            color: "#202225",
+            fontSize: 16,
+            fontWeight: "bold",
+          }}
+        >
+          {date}
+        </Typography>
+      </Box>
     );
   };
 
@@ -1025,13 +1046,17 @@ const PolynomialRootFinder = () => {
     const highestPositiveBalance = Math.max(
       ...balance.flat().filter((value) => value > 0)
     );
+  
+    const formattedBalance = new Intl.NumberFormat().format(
+      Math.round(highestPositiveBalance * 100) / 100
+    );
 
     setChartOptions((prevOptions) => ({
       ...prevOptions,
       chart: {
         width: 950,
         height: 450,
-        margin: [120, 30, 60, 70],
+        margin: [120, 30, 60, highestPositiveBalance > 1000000 ? 100 : 70], // 여기 수정
       },
       subtitle: {
         text: "Investment Value",
@@ -1047,7 +1072,7 @@ const PolynomialRootFinder = () => {
         },
       },
       title: {
-        text: `$${highestPositiveBalance.toFixed(2)}`,
+        text: `$${formattedBalance}`,
         align: "left", // Center align the title
         verticalAlign: "top", // Place the title at the bottom
         y: 75, // Adjust vertical position if needed
@@ -1119,9 +1144,10 @@ const PolynomialRootFinder = () => {
         // },
         // Add additional series for each layer
         ...balance.map((layerData, index) => ({
+          // 223,50,50
           type: "area",
-          color: `rgba(255, 117, 75, 0.${index + 2})`, // Adjust the color based on your preference
-          lineColor: `rgba(255, 117, 75, 0.${index + 2})`,
+          color: `rgba(223,50,50, 0.${index + 2})`, // Adjust the color based on your preference
+          lineColor: `rgba(223,50,50, 0.${index + 2})`,
           fillColor: "transparent",
           name: `Balance Layer ${index + 1}`,
           data: layerData,
@@ -1130,7 +1156,7 @@ const PolynomialRootFinder = () => {
             radius: 4,
             lineWidth: 0.3,
             lineColor: "transparent",
-            fillColor: `rgba(255, 117, 75, 0.${index + 2})`,
+            fillColor: `rgba(223,50,50, 0.${index + 2})`,
             symbol: "circle",
           },
         })),
@@ -1189,7 +1215,7 @@ const PolynomialRootFinder = () => {
           >
             Filter
           </Typography>
-          <button
+          {/* <button
             onClick={handleFindRoots}
             style={{
               color: "#202225",
@@ -1202,7 +1228,7 @@ const PolynomialRootFinder = () => {
             }}
           >
             <CachedIcon style={{ transform: `rotate(${iconRotation}deg)` }} />
-          </button>
+          </button> */}
           {/* Investment Period (Year) */}
           <Box
             sx={{
@@ -1227,8 +1253,10 @@ const PolynomialRootFinder = () => {
                 {editingField === "investmentPeriod" ? (
                   renderEditableField(
                     "investmentPeriod",
-                    `$ ${investmentPeriod}`,
-                    investmentPeriod
+                    `${investmentPeriod} Year`,
+                    investmentPeriod,
+                    "",
+                    "Year"
                   )
                 ) : (
                   <Typography
@@ -1279,8 +1307,10 @@ const PolynomialRootFinder = () => {
                 {editingField === "monthlyInvestment" ? (
                   renderEditableField(
                     "monthlyInvestment",
-                    // `$ ${monthlyInvestment}`,
-                    monthlyInvestment
+                    `$ ${monthlyInvestment}`,
+                    monthlyInvestment,
+                    "$",
+                    ""
                   )
                 ) : (
                   <Typography
@@ -1332,8 +1362,10 @@ const PolynomialRootFinder = () => {
                 {editingField === "initialInvestment" ? (
                   renderEditableField(
                     "initialInvestment",
-                    // `$ ${initialInvestment}`,
-                    initialInvestment
+                    `$ ${initialInvestment}`,
+                    initialInvestment,
+                    "$",
+                    ""
                   )
                 ) : (
                   <Typography
@@ -1384,8 +1416,10 @@ const PolynomialRootFinder = () => {
                 {editingField === "outvalue" ? (
                   renderEditableField(
                     "outvalue",
-                    // `$ ${outvalue}`,
-                    outvalue
+                    `$ ${outvalue}`,
+                    outvalue,
+                    "$",
+                    ""
                   )
                 ) : (
                   <Typography
@@ -1436,8 +1470,10 @@ const PolynomialRootFinder = () => {
                 {editingField === "outvaluetime" ? (
                   renderEditableField(
                     "outvaluetime",
-                    // `$ ${outvaluetime}`,
-                    outvaluetime
+                    `${outvaluetime} month`,
+                    outvaluetime,
+                    "",
+                    "month"
                   )
                 ) : (
                   <Typography
@@ -1449,7 +1485,7 @@ const PolynomialRootFinder = () => {
                     }}
                     onClick={() => handleStartEditing("outvaluetime")}
                   >
-                    $ {outvaluetime}
+                    {outvaluetime} month
                   </Typography>
                 )}
               </Box>
@@ -1470,17 +1506,16 @@ const PolynomialRootFinder = () => {
             sx={{
               // backgroundColor: "#fff",
               // borderBottom: "1px solid #e2e4e6",
-              padding: "20px",
+              padding: "15px 20px",
             }}
           >
             <Box
               sx={{
                 display: "flex",
-                justifyContent: "space-between",
-                cursor: "pointer",
+                justifyContent: "flex-end",
               }}
             >
-              <Typography
+              {/* <Typography
                 sx={{
                   color: "#202225",
                   fontSize: 16,
@@ -1497,7 +1532,34 @@ const PolynomialRootFinder = () => {
                 }}
               >
                 +
-              </Typography>
+              </Typography> */}
+              <Button
+                sx={{
+                  color: "#f3f5f7",
+                  backgroundColor: "#df3232",
+                  textTransform: "capitalize",
+                  p: "8px 10px",
+                  fontSize: 16,
+                  borderRadius: "5px",
+                  width: 150,
+
+                  ":hover": {
+                    backgroundColor: "#df3232",
+                  },
+                  ":disabled": {
+                    color: "#f3f5f7",
+                  },
+                }}
+                onClick={async () => {
+                  // 클릭 후 1초 후에 계산 시작
+                  setLoading(true);
+                  await new Promise((resolve) => setTimeout(resolve, 1000));
+                  handleFindRoots();
+                }}
+                disabled={loading}
+              >
+                {loading ? "Calculating..." : "Calculate"}
+              </Button>
             </Box>
           </Box>
         </Box>
