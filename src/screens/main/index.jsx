@@ -6,6 +6,9 @@ import MultiSimu from "components/simulation_react/MultiSimu";
 import MonteSimu from "components/simulation_react/MonteSimu";
 import Example from "components/simulation_react/Example";
 import InvestPlanFive from "components/simulation_react/InvestPlan_Five";
+import Test from "components/simulation_react/Test";
+import Tests from "components/simulation_react/Tests";
+import GetApi from "api/getApi";
 import * as React from "react";
 import Header from "components/Header";
 function CustomTabPanel(props) {
@@ -62,6 +65,9 @@ const Main = () => {
           <Tab label="Monte" {...a11yProps(4)} />
           <Tab label="231127" {...a11yProps(5)} />
           <Tab label="231201" {...a11yProps(6)} />
+          <Tab label="231204" {...a11yProps(7)} />
+          <Tab label="231204" {...a11yProps(8)} />
+          <Tab label="api" {...a11yProps(9)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
@@ -99,6 +105,15 @@ const Main = () => {
       </CustomTabPanel>
       <CustomTabPanel value={value} index={6}>
         <InvestPlanFive />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={7}>
+        <Test/>
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={8}>
+        <Tests/>
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={9}>
+        <GetApi/>
       </CustomTabPanel>
     </Box>
   );

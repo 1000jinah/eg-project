@@ -1,3 +1,137 @@
+// import React, { useEffect } from 'react';
+
+// function complexAdd(a, b) {
+//   return { real: a.real + b.real, imag: a.imag + b.imag };
+// }
+
+// function complexMultiply(a, b) {
+//   return {
+//     real: a.real * b.real - a.imag * b.imag,
+//     imag: a.real * b.imag + a.imag * b.real,
+//   };
+// }
+
+// function complexDivide(a, b) {
+//   const denominator = b.real ** 2 + b.imag ** 2;
+//   return {
+//     real: (a.real * b.real + a.imag * b.imag) / denominator,
+//     imag: (a.imag * b.real - a.real * b.imag) / denominator,
+//   };
+// }
+
+// function complexConjugate(a) {
+//   return { real: a.real, imag: -a.imag };
+// }
+
+// function findRoots(coefficients) {
+//   const degree = coefficients.length - 1;
+
+//   if (degree <= 0) {
+//     return [];
+//   }
+
+//   const newtonMethod = (x0) => {
+//     let x = x0;
+//     let iteration = 0;
+
+//     while (iteration < 1000) {
+//       const f = coefficients.reduce((acc, coef, index) => acc + coef * x ** (degree - index), 0);
+//       const fPrime = coefficients.slice(0, -1).reduce((acc, coef, index) => acc + (degree - index) * coef * x ** (degree - index - 1), 0);
+
+//       const deltaX = -f / fPrime;
+//       x += deltaX;
+
+//       if (Math.abs(deltaX) < 1e-9) {
+//         break;
+//       }
+
+//       iteration++;
+//     }
+
+//     return x;
+//   };
+
+//   const initialGuesses = Array.from({ length: degree }, (_, index) => Math.cos(((2 * index + 1) * Math.PI) / (2 * degree)));
+//   const roots = initialGuesses.map((guess) => newtonMethod(guess));
+
+//   return roots;
+// }
+
+// function calcIRR(values) {
+//   const roots = findRoots(values.reverse());
+//   const mask = roots.map((r) => r.imag === 0 && r.real > 0);
+//   const realRates = roots.filter((r, i) => mask[i]).map((r) => r.real);
+
+//   if (realRates.length === 0) {
+//     return {
+//       irr: NaN,
+//       deltaX: NaN,
+//       irrYearly: NaN,
+//     };
+//   }
+
+//   const rate = 1 / realRates - 1;
+//   const minRateIndex = rate.indexOf(Math.min(...rate.map((r) => Math.abs(r))));
+//   return {
+//     irr: realRates[minRateIndex],
+//     deltaX: 1 / rate[minRateIndex],
+//     irrYearly: Math.pow(1.0 + realRates[minRateIndex], 12.0) - 1.0,
+//   };
+// }
+
+// function ProjectionGraph({
+//   initialPayment,
+//   monthlyPayment,
+//   MonthlyPaymentPeriod,
+//   monthlyAllowance,
+//   MonthlyAllowancePeriod,
+// }) {
+//   useEffect(() => {
+//     const sharpeRatio = 1.0;
+//     const z = 0.05;
+//     const layer = 5;
+//     const cashFlows = [initialPayment];
+//     for (let i = 0; i < MonthlyPaymentPeriod; i++) {
+//       cashFlows.push(monthlyPayment);
+//     }
+//     for (let i = 0; i < MonthlyAllowancePeriod; i++) {
+//       cashFlows.push(-monthlyAllowance);
+//     }
+
+//     // Calculate the IRR
+//     const irr = calcIRR(cashFlows);
+//     const sigma = irr.irr * sharpeRatio;
+
+//     const balance = [];
+//     for (let i = 0; i < layer; i++) {
+//       balance.push([...cashFlows]);
+//       for (let j = 0; j < MonthlyPaymentPeriod + MonthlyAllowancePeriod; j++) {
+//         const n = -layer + 2 * i + 1;
+//         const delta = complexMultiply({ real: n * z * sigma, imag: 0 }, irr.irr);
+//         const updatedBalance = complexAdd(complexMultiply(balance[i][j], complexAdd({ real: 1.0, imag: 0 }, irr.irr)), balance[i][j + 1]);
+//         balance[i][j + 1] = complexAdd(updatedBalance, delta).real;
+//       }
+//     }
+
+//     console.table(balance);
+//     // Plotting logic goes here (not provided as it depends on the environment)
+//   }, [
+//     initialPayment,
+//     monthlyPayment,
+//     MonthlyPaymentPeriod,
+//     monthlyAllowance,
+//     MonthlyAllowancePeriod,
+//   ]);
+
+//   return <div>{/* JSX component content */}</div>;
+// }
+
+// export default ProjectionGraph;
+
+
+//////
+
+
 import React, { useState, useEffect } from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
@@ -178,6 +312,7 @@ const PolynomialRootFinder = () => {
         break;
     }
   };
+  
   const handleTypographyClick = (field) => {
     // Define a function to handle Typography click
     const inputValue = prompt(`Enter new value for ${field}`);
@@ -206,6 +341,7 @@ const PolynomialRootFinder = () => {
       alert("Invalid input. Please enter a numeric value.");
     }
   };
+  
   const [chartOptions, setChartOptions] = useState({
     title: {
       text: "Balance Over Time",
