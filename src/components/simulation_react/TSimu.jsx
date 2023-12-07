@@ -771,6 +771,7 @@ const PolynomialRootFinder = () => {
   const [calculatedRoots, setCalculatedRoots] = useState(null);
   const [editingField, setEditingField] = useState(null);
 
+  const [updatedBalanceData, setUpdatedBalanceData] = useState([]);
   const findRoots = (coefficients) => {
     const tolerance = 1e-10;
     const maxIterations = 1000;
@@ -1043,15 +1044,47 @@ const PolynomialRootFinder = () => {
   });
 
   useEffect(() => {
-    const highestPositiveBalance = Math.max(
-      ...balance.flat().filter((value) => value > 0)
-    );
+    ///--- 가장 높은 값일 때,
+    // const highestPositiveBalance = Math.max(
+    //   ...balance.flat().filter((value) => value > 2)
+    // )
+
+    // const updatedBalance = balance.map((layerData) => {
+    //   let foundNegative = false;
+    //   const updatedData = layerData.map((value) => {
+    //     if (value < 0 && !foundNegative) {
+    //       foundNegative = true;
+    //       return 0;
+    //     }
+    //     return foundNegative ? undefined : value;
+    //   });
+    //   return updatedData.filter((value) => value !== undefined);
+    // });
+    // Ensure balance array and its elements exist
+
+    ///--- 중간 값 일때,
+    if (!balance || balance.length < 3 || !balance[2]) {
+      // Handle the case when the data structure is not as expected
+      return;
+    }
+
+    // Filter the data for layer 3
+    const layer3Data = balance[2].filter((value) => value > 2);
+
+    // Ensure layer3Data array exists before applying Math.max
+    if (!layer3Data || layer3Data.length === 0) {
+      // Handle the case when layer 3 data is empty or undefined
+      return;
+    }
+
+    // Calculate the highest positive balance for layer 3
+    const highestPositiveBalanceLayer3 = Math.max(...layer3Data);
 
     const formattedBalance = new Intl.NumberFormat().format(
-      Math.round(highestPositiveBalance * 100) / 100
+      Math.round(highestPositiveBalanceLayer3 * 100) / 100
     );
 
-    const updatedBalance = balance.map((layerData) => {
+    const updatedBalance = balance.map((layerData, index) => {
       let foundNegative = false;
       const updatedData = layerData.map((value) => {
         if (value < 0 && !foundNegative) {
@@ -1062,15 +1095,21 @@ const PolynomialRootFinder = () => {
       });
       return updatedData.filter((value) => value !== undefined);
     });
+
     setChartOptions((prevOptions) => ({
       ...prevOptions,
       chart: {
         width: 950,
         height: 450,
-        margin: [120, 30, 60, highestPositiveBalance > 1000000 ? 100 : 70], // 여기 수정
+        margin: [
+          120,
+          30,
+          60,
+          highestPositiveBalanceLayer3 > 1000000 ? 100 : 70,
+        ], // 여기 수정
       },
       subtitle: {
-        text: "Investment Value",
+        text: "Target Value",
 
         align: "left", // Center align the subtitle
         verticalAlign: "top", // Place the subtitle at the top
@@ -1101,7 +1140,7 @@ const PolynomialRootFinder = () => {
             color: "#b3b3b3",
           },
         },
-
+        title: false,
         crosshair: true,
       },
       yAxis: {
@@ -1136,6 +1175,7 @@ const PolynomialRootFinder = () => {
                   <span>${this.name}</span></span>`;
         },
       },
+
       series: [
         // {
         //   type: "area",
@@ -1172,6 +1212,7 @@ const PolynomialRootFinder = () => {
           },
         })),
       ],
+
       credits: {
         enabled: false, // Hide the Highcharts credits
       },
@@ -1594,7 +1635,7 @@ const PolynomialRootFinder = () => {
                   fontWeight: "bold",
                   border: "1px solid #e6e4e2",
                   borderRadius: 5,
-                  textAlign:"center"
+                  textAlign: "center",
                 }}
               >
                 <div>
@@ -1608,18 +1649,6 @@ const PolynomialRootFinder = () => {
               </div>
             </div>
           )}
-          {/* <Button
-            sx={{ fontSize: "4px" }}
-            onClick={async () => {
-              // 클릭 후 1초 후에 계산 시작
-              setLoading(true);
-              await new Promise((resolve) => setTimeout(resolve, 1000));
-              handleFindRoots();
-            }}
-            disabled={loading}
-          >
-            {loading ? "Calculating..." : "Calculate"}
-          </Button> */}
         </Box>
       </Box>
     </Box>

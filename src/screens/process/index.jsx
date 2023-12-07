@@ -114,6 +114,7 @@ const HorizontalStepper = () => {
     setActiveStep(index);
     setActiveVerticalStep(0);
   };
+  
   return (
     // fef8f3 > fef4ec
     <div style={{ backgroundColor: "#fef4ec", height: "100vh" }}>
@@ -643,7 +644,7 @@ const HorizontalStepper = () => {
                     margin: "15px 0",
                   }}
                 >
-                  <Test />
+                  <Test/>
                 </div>
                 {/* Button */}
                 <div
