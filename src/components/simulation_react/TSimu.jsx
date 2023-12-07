@@ -1046,11 +1046,22 @@ const PolynomialRootFinder = () => {
     const highestPositiveBalance = Math.max(
       ...balance.flat().filter((value) => value > 0)
     );
-  
+
     const formattedBalance = new Intl.NumberFormat().format(
       Math.round(highestPositiveBalance * 100) / 100
     );
 
+    const updatedBalance = balance.map((layerData) => {
+      let foundNegative = false;
+      const updatedData = layerData.map((value) => {
+        if (value < 0 && !foundNegative) {
+          foundNegative = true;
+          return 0;
+        }
+        return foundNegative ? undefined : value;
+      });
+      return updatedData.filter((value) => value !== undefined);
+    });
     setChartOptions((prevOptions) => ({
       ...prevOptions,
       chart: {
@@ -1143,7 +1154,7 @@ const PolynomialRootFinder = () => {
         //   },
         // },
         // Add additional series for each layer
-        ...balance.map((layerData, index) => ({
+        ...updatedBalance.map((layerData, index) => ({
           // 223,50,50
           type: "area",
           color: `rgba(223,50,50, 0.${index + 2})`, // Adjust the color based on your preference
