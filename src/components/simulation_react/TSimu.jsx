@@ -1594,9 +1594,17 @@ const PolynomialRootFinder = () => {
                   fontWeight: "bold",
                   border: "1px solid #e6e4e2",
                   borderRadius: 5,
+                  textAlign:"center"
                 }}
               >
-                Slider 값 설정 후, 'Calculate' 버튼을 클릭해주세요.
+                <div>
+                  After setting the Slider value,
+                  <br />
+                  Click the <span style={{ color: "#df3232" }}>
+                    Calculate
+                  </span>{" "}
+                  button.
+                </div>
               </div>
             </div>
           )}

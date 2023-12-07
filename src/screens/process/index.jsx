@@ -26,7 +26,9 @@ const verticalsteps = ["Life Style", "Investment Style"];
 const HorizontalStepper = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [activeVerticalStep, setActiveVerticalStep] = useState(0);
-  const [goalName, setGoalName] = useState("Raising to 500$");
+  const [goalName, setGoalName] = useState("My Retirement Plan");
+  const [customGoalName, setCustomGoalName] = useState("");
+
   const [account, setAccount] = useState("General Account 140013855416");
   // 인풋(숫자)
   const [pension, setPension] = useState("");
@@ -255,25 +257,47 @@ const HorizontalStepper = () => {
                         >
                           <MenuItem
                             sx={{ color: "#202225", fontSize: 14 }}
-                            value="Raising to 500$"
+                            value="My Retirement Plan"
                           >
-                            Raising to 500$
+                            My Retirement Plan
                           </MenuItem>
                           <MenuItem
                             sx={{ color: "#202225", fontSize: 14 }}
-                            value="Raising to 1000$"
+                            value="Elio's Education Fee"
                           >
-                            Raising to 1000$
+                            Elio's Education Fee
                           </MenuItem>
                           <MenuItem
                             sx={{ color: "#202225", fontSize: 14 }}
-                            value="Raising to 1500$"
+                            value="Travelling to Australia"
                           >
-                            Raising to 1500$
+                            Travelling to Australia
+                          </MenuItem>
+                          <MenuItem
+                            sx={{ color: "#202225", fontSize: 14 }}
+                            value="Custom Goal Name"
+                          >
+                            Custom Goal Name
                           </MenuItem>
                         </Select>
                       </FormControl>
                     </Box>
+                    {goalName === "Custom Goal Name" && (
+                      <TextField
+                        sx={{
+                          ".MuiOutlinedInput-input": {
+                            padding: "8px 10px",
+                            fontSize: 14,
+                          },
+                          width: "100%",
+                          backgroundColor: "#fff",
+                          mb: 2,
+                        }}
+                        value={customGoalName}
+                        onChange={(e) => setCustomGoalName(e.target.value)}
+                        fullWidth
+                      />
+                    )}
 
                     <Box sx={{ minWidth: 120 }}>
                       <Typography
@@ -408,9 +432,14 @@ const HorizontalStepper = () => {
                         backgroundColor: "#fff",
                         mb: 2,
                       }}
-                      value={goalName}
+                      value={
+                        goalName === "Custom Goal Name"
+                          ? customGoalName
+                          : goalName
+                      }
                       readOnly
                     />
+
                     <Box
                       sx={{
                         display: "flex",
@@ -567,7 +596,9 @@ const HorizontalStepper = () => {
                           fontWeight: "bold",
                         }}
                       >
-                        {goalName}
+                        {goalName === "Custom Goal Name"
+                          ? customGoalName
+                          : goalName}
                       </Typography>
                     </Box>
                     <Box
@@ -753,7 +784,9 @@ const HorizontalStepper = () => {
                           fontWeight: "bold",
                         }}
                       >
-                        {goalName}
+                        {goalName === "Custom Goal Name"
+                          ? customGoalName
+                          : goalName}
                       </Typography>
                     </Box>
                     <Box
@@ -1243,15 +1276,9 @@ const HorizontalStepper = () => {
                                   </MenuItem>
                                   <MenuItem
                                     sx={{ color: "#202225", fontSize: 14 }}
-                                    value="2"
+                                    value="Regions"
                                   >
-                                    2
-                                  </MenuItem>
-                                  <MenuItem
-                                    sx={{ color: "#202225", fontSize: 14 }}
-                                    value="3"
-                                  >
-                                    3
+                                    Regions
                                   </MenuItem>
                                 </Select>
                               </FormControl>
@@ -1297,15 +1324,15 @@ const HorizontalStepper = () => {
                                   </MenuItem>
                                   <MenuItem
                                     sx={{ color: "#202225", fontSize: 14 }}
-                                    value="2"
+                                    value="A simple dish from nearby kopitiam"
                                   >
-                                    2
+                                    A simple dish from nearby kopitiam
                                   </MenuItem>
                                   <MenuItem
                                     sx={{ color: "#202225", fontSize: 14 }}
-                                    value="3"
+                                    value="A sumptuous feast at a fancy restaurant"
                                   >
-                                    3
+                                    A sumptuous feast at a fancy restaurant
                                   </MenuItem>
                                 </Select>
                               </FormControl>
@@ -1353,13 +1380,13 @@ const HorizontalStepper = () => {
                                     sx={{ color: "#202225", fontSize: 14 }}
                                     value="2"
                                   >
-                                    2
+                                    Public transportation
                                   </MenuItem>
                                   <MenuItem
                                     sx={{ color: "#202225", fontSize: 14 }}
-                                    value="3"
+                                    value="2"
                                   >
-                                    3
+                                    Taxi
                                   </MenuItem>
                                 </Select>
                               </FormControl>
