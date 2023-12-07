@@ -6,16 +6,17 @@ import Setting from "image/icon_setting.svg";
 import Mypage from "image/icon_mypage.svg";
 const Header = () => {
   return (
+    // fef8f3 > fef4ec
     <div>
       <Box
         sx={{
-          backgroundColor: "#fef8f3",
+          backgroundColor: "#fef4ec",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          px:3,
-          py:1.5,
-          borderBottom:"1px solid #e6e4e2"
+          px: 3,
+          py: 1.5,
+          borderBottom: "1px solid #e6e4e2",
         }}
       >
         <img src={Logo} style={{ width: "auto", height: 18 }} alt="Logo" />

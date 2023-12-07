@@ -6,6 +6,7 @@ import {
   FormControlLabel,
   Button,
 } from "@mui/material";
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 
 const Survey = ({ disabled, onClick }) => {
   const surveyData = [
@@ -208,6 +209,7 @@ const Survey = ({ disabled, onClick }) => {
                     }}
                     onClick={onClick}
                     disabled={disabled}
+                    startIcon={<KeyboardBackspaceIcon />}
                   >
                     Back
                   </Button>

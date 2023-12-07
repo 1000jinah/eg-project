@@ -14,7 +14,6 @@ import Survey from "components/Survey";
 import Test from "components/simulation_react/TSimu";
 import React, { useState } from "react";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import CloseIcon from "@mui/icons-material/Close";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 const steps = [
   "Set Your Goal",
@@ -113,9 +112,11 @@ const HorizontalStepper = () => {
 
   const handleStepClick = (index) => {
     setActiveStep(index);
+    setActiveVerticalStep(0);
   };
   return (
-    <div style={{ backgroundColor: "#fef8f3", height: "100vh" }}>
+    // fef8f3 > fef4ec
+    <div style={{ backgroundColor: "#fef4ec", height: "100vh" }}>
       <Header />
 
       <div>
@@ -154,7 +155,7 @@ const HorizontalStepper = () => {
                 // 비활성 스텝에 해당하는 경우
                 <div
                   style={{
-                    backgroundColor: "#fef8f3",
+                    backgroundColor: "#fef4ec",
                     border: "1px solid #bfbebc",
                     width: 25,
                     height: 25,
@@ -196,7 +197,7 @@ const HorizontalStepper = () => {
             display: "flex",
             justifyContent: "center",
             width: "100%",
-            backgroundColor: "#fef8f3",
+            backgroundColor: "#fef4ec",
           }}
         >
           {activeStep === 0 && (
@@ -293,6 +294,7 @@ const HorizontalStepper = () => {
                           backgroundColor: "#fff",
                           mb: 2,
                         }}
+                        placeholder="Please enter the custom goal name"
                         value={customGoalName}
                         onChange={(e) => setCustomGoalName(e.target.value)}
                         fullWidth
@@ -1531,6 +1533,7 @@ const HorizontalStepper = () => {
                     }}
                     onClick={handleBack}
                     disabled={activeStep === 0}
+                  
                   >
                     Back
                   </Button>
@@ -1562,12 +1565,12 @@ const HorizontalStepper = () => {
         </div>
       </div>
 
-      {activeStep === steps.length && (
+      {/* {activeStep === steps.length && (
         <div>
           <p>All steps completed - you're finished</p>
           <button onClick={handleReset}>Reset</button>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
