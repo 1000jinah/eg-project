@@ -1109,7 +1109,7 @@ const PolynomialRootFinder = () => {
         ], // 여기 수정
       },
       subtitle: {
-        text: `Target Value <span style="font-size: 14px; color: #b3b3b3">IRR: ${calculatedValue}%</span>`,
+        text: `Target Value <span style="font-size: 16px; color: #b3b3b3">(${calculatedValueYearly.toFixed(4)}%)</span>`,
         align: "left", // Center align the subtitle
         verticalAlign: "top", // Place the subtitle at the top
         y: 35, // Adjust vertical position if needed
@@ -1216,7 +1216,7 @@ const PolynomialRootFinder = () => {
         enabled: false, // Hide the Highcharts credits
       },
     }));
-  }, [balance, calculatedValue]);
+  }, [balance, calculatedValueYearly]);
 
   useEffect(() => {
     const style = document.createElement("style");
