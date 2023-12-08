@@ -1109,7 +1109,7 @@ const PolynomialRootFinder = () => {
         ], // 여기 수정
       },
       subtitle: {
-        text: `Target Value <span style="font-size: 16px; color: #b3b3b3">(${calculatedValueYearly.toFixed(4)}%)</span>`,
+        text: `Target Value <span style="font-size: 16px; color: #b3b3b3">(Required Return: ${(calculatedValueYearly*100).toFixed(2)}%)</span>`,
         align: "left", // Center align the subtitle
         verticalAlign: "top", // Place the subtitle at the top
         y: 35, // Adjust vertical position if needed
