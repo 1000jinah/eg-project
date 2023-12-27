@@ -11,6 +11,7 @@ import Tests from "components/simulation_react/Tests";
 import GetApi from "api/getApi";
 import * as React from "react";
 import Header from "components/Header";
+import StackWealth from "components/test/StackWealth";
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -68,6 +69,8 @@ const Main = () => {
           <Tab label="231204" {...a11yProps(7)} />
           <Tab label="231204" {...a11yProps(8)} />
           <Tab label="api" {...a11yProps(9)} />
+          <Tab label="Testing : Stack Wealth" {...a11yProps(10)} />
+
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
@@ -114,6 +117,9 @@ const Main = () => {
       </CustomTabPanel>
       <CustomTabPanel value={value} index={9}>
         <GetApi/>
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={10}>
+        <StackWealth/>
       </CustomTabPanel>
     </Box>
   );

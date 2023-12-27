@@ -1,0 +1,67 @@
+/* calcul css start */
+.sidebar {
+  /* Your existing styles for the sidebar */
+  width: 0;
+  height: 100vh;
+  background-color: #fef4ec;
+  position: relative;
+  overflow: hidden;
+  transition-duration: 0.15s;
+  transition-property: width;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar.open {
+  padding: 10px;
+  width: 220px; /* Adjust the width based on your design */
+}
+
+.app-container {
+  display: flex;
+  background-color: #f9fafc;
+}
+.content-box {
+  width: 100%;
+  padding: 30px;
+  /* Your existing styles for the content-box */
+  transition-duration: 0.15s;
+  transition-property: opacity, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar.open + .content-box {
+  transform: translateX(
+    200px
+  ); /* Adjust the value based on your sidebar width */
+  opacity: 0.8; /* Adjust the opacity as needed */
+}
+
+.tab {
+  white-space: nowrap;
+}
+
+
+.panel {
+  border: 1px solid #ddd;
+  margin: 10px;
+  overflow: hidden;
+}
+
+.panel-header {
+  cursor: pointer;
+  padding: 10px;
+  background-color: #3498db;
+  color: #fff;
+}
+
+.panel-body {
+  transition: max-height 0.3s ease-in-out;
+  max-height: 0;
+  overflow: hidden;
+}
+
+.collapsing {
+  max-height: 500px; /* Adjust the max-height based on your design */
+}
+
+/* calcul css end */

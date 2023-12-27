@@ -3,6 +3,10 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 // import Example from "screens/example";
 import Main from "screens/main";
 import Process from "screens/process";
+import Calcul from "screens/calcul";
+import MarketsMonitor from "screens/etf";
+import Chart from "screens/demo";
+
 function App() {
   return (
     <div className="app">
@@ -12,6 +16,9 @@ function App() {
           <Route path="/" element={<Navigate to="/process" replace />} />
           <Route path="/main" element={<Main />} />
           <Route path="/process" element={<Process />} />
+          <Route path="/calcul" element={<Calcul />} />
+          <Route path="/markets" element={<MarketsMonitor />} />
+          <Route path="/demo" element={<Chart />} />
         </Routes>
       </BrowserRouter>
     </div>
