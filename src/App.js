@@ -5,7 +5,7 @@ import Main from "screens/main";
 import Process from "screens/process";
 import Calcul from "screens/calcul";
 import MarketsMonitor from "screens/etf";
-import Chart from "screens/demo";
+
 
 function App() {
   return (
@@ -18,7 +18,7 @@ function App() {
           <Route path="/process" element={<Process />} />
           <Route path="/calcul" element={<Calcul />} />
           <Route path="/markets" element={<MarketsMonitor />} />
-          <Route path="/demo" element={<Chart />} />
+
         </Routes>
       </BrowserRouter>
     </div>
